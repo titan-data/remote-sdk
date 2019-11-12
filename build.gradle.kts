@@ -15,6 +15,7 @@ buildscript {
 plugins {
     kotlin("jvm") version "1.3.50"
     id("com.github.ben-manes.versions") version("0.27.0")
+    `maven-publish`
 }
 
 repositories {
@@ -28,6 +29,45 @@ val ktlint by configurations.creating
 dependencies {
     compile(kotlin("stdlib"))
     ktlint("com.pinterest:ktlint:0.35.0")
+}
+
+// Jar configuration
+group = "io.titandata"
+version = when(project.hasProperty("version")) {
+    true -> project.property("version")!!
+    false -> "latest"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// Maven publishing configuration
+val mavenBucket = when(project.hasProperty("mavenBucket")) {
+    true -> project.property("mavenBucket")
+    false -> "titan-data-maven"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "io.titandata"
+            artifactId = "remote-sdk"
+
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "titan"
+            url = uri("s3://$mavenBucket")
+            authentication {
+                create<AwsImAuthentication>("awsIm")
+            }
+        }
+    }
 }
 
 // Treat all warnings as errors
