@@ -23,10 +23,14 @@ repositories {
     maven("https://dl.bintray.com/kotlin/kotlinx")
 }
 
+val ktlint by configurations.creating
+
 dependencies {
     compile(kotlin("stdlib"))
+    ktlint("com.pinterest:ktlint:0.35.0")
 }
 
+// Treat all warnings as errors
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
@@ -34,6 +38,7 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
+// Configuration for dependencyUpdates task to ignore release candidates
 tasks.withType<DependencyUpdatesTask>().configureEach {
     resolutionStrategy {
         componentSelection {
@@ -48,3 +53,21 @@ tasks.withType<DependencyUpdatesTask>().configureEach {
         }
     }
 }
+
+// Enable ktlint checks and formatting
+tasks.register<JavaExec>("ktlint") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Check Kotlin code style"
+    classpath = ktlint
+    main = "com.pinterest.ktlint.Main"
+    args("src/**/*.kt")
+}
+
+tasks.register<JavaExec>("ktlintFormat") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Fix Kotlin code style deviations"
+    classpath = ktlint
+    main = "com.pinterest.ktlint.Main"
+    args("-F", "src/**/*.kt")
+}
+

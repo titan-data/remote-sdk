@@ -17,7 +17,7 @@ interface RemoteClient {
      * Returns the canonical name of this provider, such as "ssh" or "s3". This must be globally unique, and must
      * match the leading URI component (ssh://...).
      */
-    fun getProvider() : String
+    fun getProvider(): String
 
     /**
      * Parse a URI and return the provider-specific remote parameters in structured form. These properties will be
@@ -26,12 +26,12 @@ interface RemoteClient {
      * such as "-p keyFile=/path/to/sshKey". This should throw an IllegalArgumentException for a bad URI format
      * or invalid properties.
      */
-    fun parseUri(uri: URI, additionalProperties: Map<String, String>) : Map<String, String>
+    fun parseUri(uri: URI, additionalProperties: Map<String, String>): Map<String, String>
 
     /**
      * Convert a remote back into URI form for display. Since this is for display only, any sensitive information
      * should be redacted (e.g. "user:****@host"). Any properties that cannot be represented in the URI can be
      * passed back as the second part of the pair.
      */
-    fun toUri(properties: Map<String, String>) : Pair<String, Map<String, String>>
+    fun toUri(properties: Map<String, String>): Pair<String, Map<String, String>>
 }
