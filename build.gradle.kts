@@ -96,7 +96,7 @@ tasks.withType<DependencyUpdatesTask>().configureEach {
 }
 
 // Enable ktlint checks and formatting
-tasks.register<JavaExec>("ktlint") {
+val ktlintTask = tasks.register<JavaExec>("ktlint") {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Check Kotlin code style"
     classpath = ktlint
@@ -111,6 +111,8 @@ tasks.register<JavaExec>("ktlintFormat") {
     main = "com.pinterest.ktlint.Main"
     args("-F", "src/**/*.kt")
 }
+
+tasks.named("check").get().dependsOn(ktlintTask)
 
 // Test configuration
 tasks.test {
