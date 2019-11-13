@@ -29,6 +29,7 @@ val ktlint by configurations.creating
 dependencies {
     compile(kotlin("stdlib"))
     ktlint("com.pinterest:ktlint:0.35.0")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
 // Jar configuration
@@ -95,7 +96,7 @@ tasks.withType<DependencyUpdatesTask>().configureEach {
 }
 
 // Enable ktlint checks and formatting
-tasks.register<JavaExec>("ktlint") {
+val ktlintTask = tasks.register<JavaExec>("ktlint") {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Check Kotlin code style"
     classpath = ktlint
@@ -111,3 +112,9 @@ tasks.register<JavaExec>("ktlintFormat") {
     args("-F", "src/**/*.kt")
 }
 
+tasks.named("check").get().dependsOn(ktlintTask)
+
+// Test configuration
+tasks.test {
+    useJUnitPlatform()
+}

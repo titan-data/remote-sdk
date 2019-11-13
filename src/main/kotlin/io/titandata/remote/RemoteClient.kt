@@ -40,5 +40,5 @@ interface RemoteClient {
      * This is invoked in the context of the user CLI. It can access user data, such as SSH or AWS configuration. It
      * can also interactively prompt the user for additional input (such as a password).
      */
-    fun getParameters(remoteProperties: Map<String, Any>) : Map<String, Any>
+    fun getParameters(remoteProperties: Map<String, Any>): Map<String, Any>
 }
