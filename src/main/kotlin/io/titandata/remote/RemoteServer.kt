@@ -7,6 +7,12 @@ package io.titandata.remote
 interface RemoteServer {
 
     /**
+     * Returns the canonical name of this provider, such as "ssh" or "s3". This must be globally unique, and must
+     * match the name used in the corresponding client.
+     */
+    fun getProvider(): String
+
+    /**
      * Fetches a set of commits from the remote server. Commits are simply a tuple of (commitId, properties), with
      * some properties having semantic significance (namely timestamp and tags). The remote provider should always
      * return commits in reverse timestamp order, optionally filtered by the given tags. There are utility methods
