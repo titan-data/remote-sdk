@@ -6,8 +6,8 @@ package io.titandata.remote
 import java.net.URI
 
 /**
- * The remote client interface defines functionality that runs in the context of the titan. It is responsible for
- * parsing the URI format of remotes, validating remote properties, and createing remote parameters. It can consume
+ * The remote client interface defines functionality that runs in the context of the titan CLI. It is responsible for
+ * parsing the URI format of remotes, validating remote properties, and creating remote parameters. It can consume
  * data within the user's context, such as AWS credentials or local SSH keys, that will be passed to the server
  * side implementation.
  */
