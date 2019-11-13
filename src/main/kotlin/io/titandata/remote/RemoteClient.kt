@@ -26,12 +26,19 @@ interface RemoteClient {
      * such as "-p keyFile=/path/to/sshKey". This should throw an IllegalArgumentException for a bad URI format
      * or invalid properties.
      */
-    fun parseUri(uri: URI, additionalProperties: Map<String, String>): Map<String, String>
+    fun parseUri(uri: URI, additionalProperties: Map<String, String>): Map<String, Any>
 
     /**
      * Convert a remote back into URI form for display. Since this is for display only, any sensitive information
      * should be redacted (e.g. "user:****@host"). Any properties that cannot be represented in the URI can be
      * passed back as the second part of the pair.
      */
-    fun toUri(properties: Map<String, String>): Pair<String, Map<String, String>>
+    fun toUri(properties: Map<String, Any>): Pair<String, Map<String, String>>
+
+    /**
+     * Given a set of remote properties, return a set of parameter properties that will be passed to each operation.
+     * This is invoked in the context of the user CLI. It can access user data, such as SSH or AWS configuration. It
+     * can also interactively prompt the user for additional input (such as a password).
+     */
+    fun getParameters(remoteProperties: Map<String, Any>) : Map<String, Any>
 }
