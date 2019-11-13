@@ -29,6 +29,7 @@ val ktlint by configurations.creating
 dependencies {
     compile(kotlin("stdlib"))
     ktlint("com.pinterest:ktlint:0.35.0")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
 // Jar configuration
@@ -111,3 +112,7 @@ tasks.register<JavaExec>("ktlintFormat") {
     args("-F", "src/**/*.kt")
 }
 
+// Test configuration
+tasks.test {
+    useJUnitPlatform()
+}
