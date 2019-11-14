@@ -65,6 +65,18 @@ interface RemoteServer {
     fun getProvider(): String
 
     /**
+     * Validates the configuration of a remote. If the CLi is using the RemoteUtil, it should never generate
+     * malformed remotes, but this can serve as a backstop and also handle conversion cases (such as dealing with
+     * integers that are transferred as numbers).
+     */
+    fun validateRemote(remote: Map<String, Any>): Map<String, Any>
+
+    /**
+     * Validates the configuration of remote parameters.
+     */
+    fun validateParameters(parameters: Map<String, Any>): Map<String, Any>
+
+    /**
      * Fetches a set of commits from the remote server. Commits are simply a tuple of (commitId, properties), with
      * some properties having semantic significance (namely timestamp and tags). The remote provider should always
      * return commits in reverse timestamp order, optionally filtered by the given tags. There are utility methods
