@@ -1,6 +1,7 @@
 package io.titandata.remote
 
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
 class RemoteServerUtilTest : StringSpec() {
@@ -71,6 +72,22 @@ class RemoteServerUtilTest : StringSpec() {
             sorted[1].first shouldBe "two"
             sorted[2].first shouldBe "one"
             sorted[3].first shouldBe "four"
+        }
+
+        "validate fields succeeds" {
+            util.validateFields(mapOf("a" to "A", "b" to "B"), listOf("a"), listOf("b"))
+        }
+
+        "validate fields fails with missing required field" {
+            shouldThrow<IllegalArgumentException> {
+                util.validateFields(emptyMap(), listOf("a"), emptyList())
+            }
+        }
+
+        "validate fields fails with invalid property" {
+            shouldThrow<IllegalArgumentException> {
+                util.validateFields(mapOf("c" to "C"), listOf("a"), listOf("b"))
+            }
         }
     }
 }

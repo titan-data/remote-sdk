@@ -43,4 +43,20 @@ class RemoteServerUtil {
 
         return true
     }
+
+    /**
+     * Validate a set of properties (as with remotes and parameters) for required and optional fields.
+     */
+    fun validateFields(props: Map<String, Any>, required: List<String>, optional: List<String>) {
+        for (prop in required) {
+            if (!props.containsKey(prop)) {
+                throw IllegalArgumentException("missing required property '$prop'")
+            }
+        }
+        for (prop in props.keys) {
+            if (!(prop in required) && !(prop in optional)) {
+                throw IllegalArgumentException("invalid property '$prop'")
+            }
+        }
+    }
 }
