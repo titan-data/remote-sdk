@@ -47,7 +47,7 @@ data class RemoteOperation(
     val remote: Map<String, Any>,
     val parameters: Map<String, Any>,
     val operationId: String,
-    val commidId: String,
+    val commitId: String,
     val type: RemoteOperationType,
     var data: Any?
 )
