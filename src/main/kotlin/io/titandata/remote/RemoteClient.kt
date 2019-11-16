@@ -1,6 +1,7 @@
 /*
  * Copyright The Titan Project Contributors.
  */
+
 package io.titandata.remote
 
 import java.net.URI
