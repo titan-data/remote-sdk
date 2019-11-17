@@ -114,6 +114,7 @@ class RsyncRemoteTest : StringSpec() {
                 parameters = emptyMap(),
                 operationId = "operation",
                 commitId = "commit",
+                commit = null,
                 type = type,
                 data = null)
     }

@@ -42,6 +42,8 @@ enum class RemoteOperationType {
  *
  *      commitId            Commit being pushed or pulled
  *
+ *      commit              Commit metadata, if this is a push operation.
+ *
  *      type                Operation type (push or pull)
  *
  *      userData            Optional data, set by startOperation(), that can be used during the course of the operation.
@@ -52,6 +54,7 @@ data class RemoteOperation(
     val parameters: Map<String, Any>,
     val operationId: String,
     val commitId: String,
+    val commit: Map<String, Any>?,
     val type: RemoteOperationType,
     var data: Any?
 )
