@@ -117,4 +117,11 @@ interface RemoteServer {
      * once per operation, and can be used to store any temporary state, even across operations.
      */
     fun syncVolume(operation: RemoteOperation, volumeName: String, volumeDescription: String, volumePath: String, scratchPath: String)
+
+    /**
+     * Push metadata for the commit to the remote. This can be done either when creating a new commit, or when
+     * doing a metadata-only update (e.g. pushing new tags). The 'isUpdate' flag indicates whether we are updating
+     * existing metadata or creating new metadata.
+     */
+    fun pushMetadata(operation: RemoteOperation, commit: Map<String, Any>, isUpdate: Boolean)
 }

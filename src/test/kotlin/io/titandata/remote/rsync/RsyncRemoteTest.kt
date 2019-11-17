@@ -67,6 +67,9 @@ class RsyncRemoteTest : StringSpec() {
 
         override fun endOperation(operation: RemoteOperation, isSuccessful: Boolean) {
         }
+
+        override fun pushMetadata(operation: RemoteOperation, commit: Map<String, Any>, isUpdate: Boolean) {
+        }
     }
 
     @InjectMockKs
