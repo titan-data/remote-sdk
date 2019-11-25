@@ -33,11 +33,11 @@ class ArchiveRemoteTest : StringSpec() {
     class TestRemote : ArchiveRemote() {
         var archive: File? = null
 
-        override fun pushArchive(operation: RemoteOperation, volume: String, archive: File) {
+        override fun pushArchive(operation: RemoteOperation, operationData: Any?, volume: String, archive: File) {
             this.archive = archive
         }
 
-        override fun pullArchive(operation: RemoteOperation, volume: String, archive: File) {
+        override fun pullArchive(operation: RemoteOperation, operationData: Any?, volume: String, archive: File) {
             this.archive = archive
         }
 
@@ -61,10 +61,10 @@ class ArchiveRemoteTest : StringSpec() {
             return null
         }
 
-        override fun startOperation(operation: RemoteOperation) {
+        override fun syncDataStart(operation: RemoteOperation) {
         }
 
-        override fun endOperation(operation: RemoteOperation, isSuccessful: Boolean) {
+        override fun syncDataEnd(operation: RemoteOperation, operationData: Any?, isSuccessful: Boolean) {
         }
 
         override fun pushMetadata(operation: RemoteOperation, commit: Map<String, Any>, isUpdate: Boolean) {
@@ -114,15 +114,14 @@ class ArchiveRemoteTest : StringSpec() {
                 operationId = "operation",
                 commitId = "commit",
                 commit = null,
-                type = type,
-                data = null)
+                type = type)
     }
 
     init {
         "push updates progress correctly" {
             every { executor.exec(any<Process>(), any()) } returns ""
 
-            server.syncVolume(getOperation(RemoteOperationType.PUSH), "volume", "description", "/path",
+            server.syncDataVolume(getOperation(RemoteOperationType.PUSH), null, "volume", "description", "/path",
                     scratchPath.toString())
 
             progress.size shouldBe 4
@@ -139,7 +138,7 @@ class ArchiveRemoteTest : StringSpec() {
         "push creates archive correctly" {
             every { executor.exec(any<Process>(), any()) } returns ""
 
-            server.syncVolume(getOperation(RemoteOperationType.PUSH), "volume", "description", "/path",
+            server.syncDataVolume(getOperation(RemoteOperationType.PUSH), null, "volume", "description", "/path",
                     scratchPath.toString())
 
             val archivePath = "$scratchPath/volume.tar.gz"
@@ -153,7 +152,7 @@ class ArchiveRemoteTest : StringSpec() {
         "pull updates progress correctly" {
             every { executor.exec(any<Process>(), any()) } returns ""
 
-            server.syncVolume(getOperation(RemoteOperationType.PULL), "volume", "description", "/path",
+            server.syncDataVolume(getOperation(RemoteOperationType.PULL), null, "volume", "description", "/path",
                     scratchPath.toString())
 
             progress.size shouldBe 4
@@ -170,7 +169,7 @@ class ArchiveRemoteTest : StringSpec() {
         "pull extracts archive correctly" {
             every { executor.exec(any<Process>(), any()) } returns ""
 
-            server.syncVolume(getOperation(RemoteOperationType.PULL), "volume", "description", "/path",
+            server.syncDataVolume(getOperation(RemoteOperationType.PULL), null, "volume", "description", "/path",
                     scratchPath.toString())
 
             val archivePath = "$scratchPath/volume.tar.gz"
