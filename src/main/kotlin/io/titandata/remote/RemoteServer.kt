@@ -121,7 +121,7 @@ interface RemoteServer {
         scratchPath: String
     )
 
-    /**k
+    /**
      * Ends the data portion of an operation. This is called after all volumes have been synced, regardless of success
      * or failure. The 'operationData' parameter is passed from teh result of syncDataStart(). The 'isSuccessful' flag
      * indicates whether the operation was successful.
@@ -131,7 +131,7 @@ interface RemoteServer {
     /**
      * Push metadata for the commit to the remote. This can be done either when creating a new commit, or when
      * doing a metadata-only update (e.g. pushing new tags). The 'isUpdate' flag indicates whether we are updating
-     * existing metadata or creating new metadata. This method is not called for pull operations. Because this
+     * existing metadata or creating new metadata. This method is not called for pull operations.
      */
     fun pushMetadata(operation: RemoteOperation, commit: Map<String, Any>, isUpdate: Boolean)
 }
