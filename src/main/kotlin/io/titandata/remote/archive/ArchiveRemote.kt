@@ -19,11 +19,12 @@ abstract class ArchiveRemote : RemoteServer {
 
     internal val executor = CommandExecutor()
 
-    abstract fun pushArchive(operation: RemoteOperation, volume: String, archive: File)
-    abstract fun pullArchive(operation: RemoteOperation, volume: String, archive: File)
+    abstract fun pushArchive(operation: RemoteOperation, operationData: Any?, volume: String, archive: File)
+    abstract fun pullArchive(operation: RemoteOperation, operationData: Any?, volume: String, archive: File)
 
-    override fun syncVolume(
+    override fun syncDataVolume(
         operation: RemoteOperation,
+        operationData: Any?,
         volumeName: String,
         volumeDescription: String,
         volumePath: String,
@@ -41,13 +42,13 @@ abstract class ArchiveRemote : RemoteServer {
             operation.updateProgress(RemoteProgress.END, null, null)
 
             operation.updateProgress(RemoteProgress.START, "Pushing archive for $volumeDescription", null)
-            pushArchive(operation, volumeName, File(archive))
+            pushArchive(operation, operationData, volumeName, File(archive))
             File(archive).delete()
             operation.updateProgress(RemoteProgress.END, null, null)
         } else {
             operation.updateProgress(RemoteProgress.START, "Pulling archive for $volumeDescription", null)
             val archive = "$scratchPath/$volumeName.tar.gz"
-            pullArchive(operation, volumeName, File(archive))
+            pullArchive(operation, operationData, volumeName, File(archive))
             operation.updateProgress(RemoteProgress.END, null, null)
 
             operation.updateProgress(RemoteProgress.START,

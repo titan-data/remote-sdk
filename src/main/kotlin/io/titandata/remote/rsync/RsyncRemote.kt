@@ -18,17 +18,18 @@ abstract class RsyncRemote : RemoteServer {
 
     internal val executor = CommandExecutor()
 
-    abstract fun getRemotePath(operation: RemoteOperation, volume: String): String
-    abstract fun getRsync(operation: RemoteOperation, src: String, dst: String, executor: CommandExecutor): RsyncExecutor
+    abstract fun getRemotePath(operation: RemoteOperation, operationData: Any?, volume: String): String
+    abstract fun getRsync(operation: RemoteOperation, operationData: Any?, src: String, dst: String, executor: CommandExecutor): RsyncExecutor
 
-    override fun syncVolume(
+    override fun syncDataVolume(
         operation: RemoteOperation,
+        operationData: Any?,
         volumeName: String,
         volumeDescription: String,
         volumePath: String,
         scratchPath: String
     ) {
-        val remotePath = getRemotePath(operation, volumeName)
+        val remotePath = getRemotePath(operation, operationData, volumeName)
         val (src, dst) = if (operation.type == RemoteOperationType.PUSH) {
             volumePath to remotePath
         } else {
@@ -36,7 +37,7 @@ abstract class RsyncRemote : RemoteServer {
         }
 
         operation.updateProgress(RemoteProgress.START, "Syncing $volumeDescription", 0)
-        val rsync = getRsync(operation, src, dst, executor)
+        val rsync = getRsync(operation, operationData, src, dst, executor)
         rsync.run()
     }
 }

@@ -1,5 +1,11 @@
+/*
+ * Copyright The Titan Project Contributors.
+ */
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
+apply(plugin="com.github.ben-manes.versions")
 
 buildscript {
     repositories {
@@ -13,7 +19,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "1.3.60"
     id("com.github.ben-manes.versions") version("0.27.0")
     `maven-publish`
 }

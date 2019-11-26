@@ -45,8 +45,6 @@ enum class RemoteOperationType {
  *      commit              Commit metadata, if this is a push operation.
  *
  *      type                Operation type (push or pull)
- *
- *      userData            Optional data, set by startOperation(), that can be used during the course of the operation.
  */
 data class RemoteOperation(
     val updateProgress: (RemoteProgress, String?, Int?) -> Unit,
@@ -55,8 +53,7 @@ data class RemoteOperation(
     val operationId: String,
     val commitId: String,
     val commit: Map<String, Any>?,
-    val type: RemoteOperationType,
-    var data: Any?
+    val type: RemoteOperationType
 )
 
 /**
@@ -101,30 +98,40 @@ interface RemoteServer {
     fun getCommit(remote: Map<String, Any>, parameters: Map<String, Any>, commitId: String): Map<String, Any>?
 
     /**
-     * Starts a new operation. This method is invoked once for each operation, and is passed all context around
+     * Starts a new data operation. This method is invoked once for each operation, and is passed all context around
      * the operation, including remote configuration, commit ID, and unique identifier for the operation. This
-     * method may do nothing, but if needed it can do additional work and store operation-specific data in the
-     * 'data' member of the object.
+     * method may do nothing, but if needed it can do additional work and return operation-specific data that is
+     * later passed to each syncVolume() invocation. This method is only called when syncing data, metadata-only
+     * operations do not invoke this method (or any of the other
      */
-    fun startOperation(operation: RemoteOperation)
-
-    /**
-     * Ends an operation. This is called after all volumes have been synced, regardless of success or failure. The
-     * 'isSuccessful' flag indicates whether the operation was successful.
-     */
-    fun endOperation(operation: RemoteOperation, isSuccessful: Boolean)
+    fun syncDataStart(operation: RemoteOperation): Any?
 
     /**
      * Syncs a particular volume, push or pull. The operation type can be determined by the 'type' member of the
      * operation data. The volume data will be accessible at the 'volumePath' location. The 'scratchPath' is created
-     * once per operation, and can be used to store any temporary state, even across operations.
+     * once per operation, and can be used to store any temporary state, even across operations. The operationData
+     * parameter is passed from the result of syncDataStart().
      */
-    fun syncVolume(operation: RemoteOperation, volumeName: String, volumeDescription: String, volumePath: String, scratchPath: String)
+    fun syncDataVolume(
+        operation: RemoteOperation,
+        operationData: Any?,
+        volumeName: String,
+        volumeDescription: String,
+        volumePath: String,
+        scratchPath: String
+    )
+
+    /**
+     * Ends the data portion of an operation. This is called after all volumes have been synced, regardless of success
+     * or failure. The 'operationData' parameter is passed from teh result of syncDataStart(). The 'isSuccessful' flag
+     * indicates whether the operation was successful.
+     */
+    fun syncDataEnd(operation: RemoteOperation, operationData: Any?, isSuccessful: Boolean)
 
     /**
      * Push metadata for the commit to the remote. This can be done either when creating a new commit, or when
      * doing a metadata-only update (e.g. pushing new tags). The 'isUpdate' flag indicates whether we are updating
-     * existing metadata or creating new metadata.
+     * existing metadata or creating new metadata. This method is not called for pull operations.
      */
     fun pushMetadata(operation: RemoteOperation, commit: Map<String, Any>, isUpdate: Boolean)
 }
